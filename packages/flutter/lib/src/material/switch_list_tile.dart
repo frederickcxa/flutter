@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'list_tile.dart';
@@ -281,12 +282,12 @@ class SwitchListTile extends StatelessWidget {
     this.dense,
     this.secondary,
     this.selected = false,
-  }) : _switchListTileType = _SwitchListTileType.material,
-       assert(value != null),
-       assert(isThreeLine != null),
-       assert(!isThreeLine || subtitle != null),
-       assert(selected != null),
-       super(key: key);
+  })  : _switchListTileType = _SwitchListTileType.material,
+        assert(value != null),
+        assert(isThreeLine != null),
+        assert(!isThreeLine || subtitle != null),
+        assert(selected != null),
+        super(key: key);
 
   /// Creates the wrapped switch with [Switch.adaptive].
   ///
@@ -312,12 +313,12 @@ class SwitchListTile extends StatelessWidget {
     this.dense,
     this.secondary,
     this.selected = false,
-  }) : _switchListTileType = _SwitchListTileType.adaptive,
-       assert(value != null),
-       assert(isThreeLine != null),
-       assert(!isThreeLine || subtitle != null),
-       assert(selected != null),
-       super(key: key);
+  })  : _switchListTileType = _SwitchListTileType.adaptive,
+        assert(value != null),
+        assert(isThreeLine != null),
+        assert(!isThreeLine || subtitle != null),
+        assert(selected != null),
+        super(key: key);
 
   /// Whether this switch is checked.
   ///
@@ -452,19 +453,34 @@ class SwitchListTile extends StatelessWidget {
           inactiveThumbColor: inactiveThumbColor,
         );
     }
+
+    final ThemeData theme = Theme.of(context);
+    final bool displaySplash =
+        !(_switchListTileType == _SwitchListTileType.adaptive && theme.platform == TargetPlatform.iOS);
+
     return MergeSemantics(
-      child: ListTileTheme.merge(
-        selectedColor: activeColor ?? Theme.of(context).accentColor,
-        child: ListTile(
-          leading: secondary,
-          title: title,
-          subtitle: subtitle,
-          trailing: control,
-          isThreeLine: isThreeLine,
-          dense: dense,
-          enabled: onChanged != null,
-          onTap: onChanged != null ? () { onChanged(!value); } : null,
-          selected: selected,
+      child: Theme(
+        data: theme.copyWith(
+          highlightColor: displaySplash ? theme.highlightColor : Colors.transparent,
+          splashColor: displaySplash ? theme.splashColor : Colors.transparent,
+        ),
+        child: ListTileTheme.merge(
+          selectedColor: activeColor ?? Theme.of(context).accentColor,
+          child: ListTile(
+            leading: secondary,
+            title: title,
+            subtitle: subtitle,
+            trailing: control,
+            isThreeLine: isThreeLine,
+            dense: dense,
+            enabled: onChanged != null,
+            onTap: onChanged != null
+                ? () {
+                    onChanged(!value);
+                  }
+                : null,
+            selected: selected,
+          ),
         ),
       ),
     );
